@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="kr.co.ubcn.rm.mapper.mariaVmms.MariaVmmsMapper">
+
+	<select id="StateUpload" resultType="kr.co.ubcn.rm.model.TerAndCnt">
+		<![CDATA[ 
+	SELECT TERMINAL_ID, COUNT(*) AS CNT FROM TB_TXT_STATUS
+	WHERE CREATE_DATE BETWEEN STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT},'%Y%m%d%H%i%s') AND TERMINAL_ID NOT IN ('2000047163')
+	GROUP BY TERMINAL_ID HAVING COUNT(*) >= #{rmPropCnt}
+		]]>	
+	</select>
+	
+	
+	<select id="StateQtInfo" resultType="kr.co.ubcn.rm.model.TerAndCnt">
+		<![CDATA[ 
+	SELECT TERMINAL_ID,COUNT(*) AS CNT FROM TB_TXT_STATUS 
+	WHERE TERMINAL_ID = #{rmTerminalID} AND  
+	CREATE_DATE BETWEEN STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT},'%Y%m%d%H%i%s') 
+	GROUP BY TERMINAL_ID
+		]]>	
+	</select>
+	
+	
+	
+	<select id="rtnTermStateNext" resultType="String">
+		<![CDATA[ 
+	SELECT CREATETIME FROM (
+	SELECT DATE_FORMAT(CREATE_DATE,'%Y%m%d%H%i%s') AS CREATETIME 
+	FROM TB_TXT_STATUS 
+	WHERE TERMINAL_ID = #{rmTerminalArr} AND  
+ 	CREATE_DATE >= STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s')
+	ORDER BY CREATE_DATE DESC ) A
+	limit 1
+		]]>	
+	</select>
+
+
+  	<select id="HourTermStateCheck" resultType="kr.co.ubcn.rm.model.TerAndCnt">
+		<![CDATA[ 
+	SELECT TERMINAL_ID,COUNT(*) AS "CNT" FROM TB_TXT_STATUS 
+	WHERE TERMINAL_ID = #{terminal} AND  
+ 	CREATE_DATE BETWEEN STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT},'%Y%m%d%H%i%s') 
+	GROUP BY TERMINAL_ID
+		]]>	
+	</select>
+
+
+<!-- 	
+	SELECT CREATETIME FROM (
+SELECT TO_CHAR(CREATE_DATE,'YYYYMMDDHH24MISS') AS CREATETIME 
+FROM TB_TXT_STATUS 
+WHERE TERMINAL_ID = ? AND  
+ CREATE_DATE >= TO_DATE(?,'YYYY-MM-DD HH24:MI:SS')
+ORDER BY CREATE_DATE DESC ) A WHERE ROWNUM=1
+ -->
+	
+	
+	
+</mapper>

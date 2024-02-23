@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+	">
+	 
+	<bean id="RmChkProcess" class="kr.co.ubcn.rm.rmchk.RmChkProc">
+	   
+	    <!-- property name="bossCount" value="1" /-->
+		<!-- property name="workerCount" value="4" /-->
+		<!-- property name="backlog" value="128" /-->
+		<!-- property name="idleTimeoutMillis" value="10000" /-->
+		<!-- property name="characterEncoding" value="EUC-KR" /-->
+		<!-- property name="sessionHandler" ref="sessionHandler" /-->
+		
+		<!-- property name="defaultHandler" ref="defaultHandler" /-->
+	</bean>	
+	
+	
+</beans>
+	

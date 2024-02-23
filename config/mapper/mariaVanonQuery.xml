@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="kr.co.ubcn.rm.mapper.mariaVanon.MariaVanonMapper">
+
+	<select id="MangCancelCNT" resultType="Integer">
+		<![CDATA[ 
+  	select COUNT(*) from TBLTLF${strToday} WHERE UNIQUENO BETWEEN #{stUNIQUENO} AND #{endUNIQUENO} AND (TERMINALID,CARDNO,TRANSEQNO) NOT IN (
+    select /*+RULE */ TERMINALID,CARDNO,TRANSEQNO from TBLTLF${strToday} WHERE UNIQUENO BETWEEN #{stUNIQUENO} AND #{endUNIQUENO} AND (TERMINALID,CARDNO,TRANSEQNO) IN (
+     SELECT /*+RULE */  TERMINALID,CARDNO,TRANSEQNO FROM VANON.TBLTLF${strToday} WHERE  UNIQUENO BETWEEN #{stUNIQUENO} AND #{endUNIQUENO}  AND TRANTIME BETWEEN #{stTIME} and #{endTIME} AND MSGTYPE='08' AND REPLYCODE='8412' AND REPLYMSG='거래내역 없음'
+              AND OLDAUTHNO IS NULL AND TERMINALID NOT IN ('2000000574','2000011357')
+    ) AND MSGTYPE IN ('01','06') AND TRANTIME BETWEEN #{stTIME} and #{endTIME}        
+  ) AND  MSGTYPE ='08' AND TRANTIME BETWEEN #{stTIME} and #{endTIME} AND REPLYCODE='8412' AND REPLYMSG='거래내역 없음' AND TERMINALID NOT IN ('2000000574','2000011357')
+		]]>	
+	</select>
+
+
+ 	<select id="AppProcessCheck" resultType="String" parameterType="String">
+ 		<![CDATA[ 
+ 	WITH PROCNAME AS (
+    	SELECT 'NEWONLINE01' AS SERVER FROM DUAL
+    	UNION ALL SELECT 'NEWONLINE02' AS SERVER FROM DUAL
+    	UNION ALL SELECT 'NEWONLINE03' AS SERVER FROM DUAL
+    	UNION ALL SELECT 'NEWONLINE04' AS SERVER FROM DUAL
+    	UNION ALL SELECT 'NEWONLINE05' AS SERVER FROM DUAL
+	)	
+
+	SELECT A.SERVER 
+	FROM PROCNAME A
+	LEFT JOIN (
+	    SELECT SUBSTRING(MERCHANTPROCNAME, 1, 10) AS SERVER, COUNT(*) 
+	    FROM VANON.TBLTLF${strToday}
+	    WHERE 
+	        UNIQUENO BETWEEN '${stUNIQUENO}' AND '${endUNIQUENO}' 
+	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('${endIND_DT}','%Y-%m-%d %H:%i:%s')
+	        AND MERCHANTPROCNAME LIKE 'V_TERMSVR%' 
+	    GROUP BY SUBSTRING(MERCHANTPROCNAME, 1, 10)
+	
+	    UNION ALL
+	
+	    SELECT MERCHANTPROCNAME AS SERVER, COUNT(*) 
+	    FROM VANON.TBLTLF${strToday}
+	    WHERE 
+	        UNIQUENO BETWEEN '${stUNIQUENO}' AND '${endUNIQUENO}'  
+	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('${endIND_DT}','%Y-%m-%d %H:%i:%s')
+	        AND MERCHANTPROCNAME LIKE 'NEWONLINE%' 
+	    GROUP BY MERCHANTPROCNAME
+	) B ON A.SERVER = B.SERVER
+	WHERE B.SERVER IS NULL;	 		
+		]]>	
+	</select>
+<!-- DATE_FORMAT(CREATE_DATE,'%Y%m%d%H%i%s')
+STR_TO_DATE('20240223100000','%Y%m%d%H%i%s') -->
+
+
+	<select id ="NoShopApp" resultType="kr.co.ubcn.rm.model.RmNoRegShopTimeVO">
+		<![CDATA[ 
+	SELECT MERCHANTNAME, COUNT(*) AS "count" FROM VANON.TBLTLF${strToday} WHERE 
+	UNIQUENO BETWEEN #{stUNIQUENO} AND #{endUNIQUENO}  
+	AND 
+	INS_DT BETWEEN STR_TO_DATE(#{stIND_DT} ,'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT} ,'%Y%m%d%H%i%s') 
+	AND HOSTREPLYCODE='8331'  AND TERMINALID NOT IN ('2000040357')
+	GROUP BY MERCHANTNAME HAVING COUNT(*) > #{rmNoShopPropCnt} 
+		]]>	
+	</select>
+	
+	
+	<select id="DayTBLCheck1" resultType="Integer">
+		<!-- 일일원장 테이블생성 확인 -->
+		<![CDATA[ 
+ 	SELECT COUNT(*) AS CNT FROM VANON.TBLTLF${nextDay}
+ 		]]>	
+	</select>
+	
+	<select id="DayTBLCheck2" resultType="Integer">
+	    <!-- 일일원장 테이블생성 확인 -->
+		<![CDATA[ 
+ 	SELECT COUNT(*) AS CNT FROM VANON.TBLICTLF${nextDay}
+ 		]]>	
+	</select>
+
+
+
+</mapper>
+
+

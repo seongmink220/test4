@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration scan="true" scanPeriod="30 seconds">
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="RMAppSv" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>info</level>
+		</filter>
+		<file>${LOG_PATH}/rmMGMTv1.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/rmMGMTv1-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!--
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			-->
+			<maxHistory>90</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n</pattern>
+		</encoder>
+	</appender>
+    <!-- 
+	<appender name="TMSv2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<file>${LOG_PATH}/tms-v2.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/tms-v2-%d{yyyy-MM-dd}.log</fileNamePattern>
+			
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			
+			<maxHistory>90</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } - - - [%t] %-40.40logger{39} : %m%n</pattern>
+		</encoder>
+	</appender>
+    -->
+     
+	<logger name="kr.co.ubcn.rm">
+		<appender-ref ref="RMAppSv" />
+	</logger>
+	
+	<logger name="org.hibernate.SQL" >
+		<appender-ref ref="RMAppSv" />		
+	</logger>
+	<root>
+		<appender-ref ref="CONSOLE"/>
+	</root>
+</configuration>
