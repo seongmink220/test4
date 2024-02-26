@@ -23,9 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ubcn.rm.mapper.mariaVanon.MariaVanonMapper;
 import kr.co.ubcn.rm.mapper.mariaVmms.MariaVmmsMapper;
-import kr.co.ubcn.rm.model.HourTermStateCheckVO;
 import kr.co.ubcn.rm.model.RmNoRegShopTimeVO;
-import kr.co.ubcn.rm.model.StateUploadVO;
+import kr.co.ubcn.rm.model.TerAndCnt;
 import kr.co.ubcn.rm.rmchk.RmChkProc;
 import kr.co.ubcn.rm.util.DateUtils;
 import kr.co.ubcn.rm.util.StringUtils;
@@ -106,7 +105,7 @@ public class MariaService {
 		String endIND_DT = endDate;
 		StringBuilder sb = new StringBuilder();
 		
-		ArrayList<HourTermStateCheckVO> hourTermStateCheckVO;
+		ArrayList<TerAndCnt> terAndCnt;
 		
 //		System.out.println("terminalterminalterminalterminal===" + terminal);
 //		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DT===" + stIND_DT);
@@ -116,11 +115,11 @@ public class MariaService {
 		
 		try {
 			
-			hourTermStateCheckVO = mariaVmmsMapper.HourTermStateCheck(terminal, stIND_DT, endIND_DT);
+			terAndCnt = mariaVmmsMapper.HourTermStateCheck(terminal, stIND_DT, endIND_DT);
 			
-			for(int j=0; j<hourTermStateCheckVO.size(); j++) {
-				rsTerminalID = hourTermStateCheckVO.get(j).getTERMINAL_ID();
-				rsCNT = hourTermStateCheckVO.get(j).getCNT();
+			for(int j=0; j<terAndCnt.size(); j++) {
+				rsTerminalID = terAndCnt.get(j).getTERMINAL_ID();
+				rsCNT = terAndCnt.get(j).getCNT();
 				   
 				log.debug("체크 터미널ID {}:카운트{}",rsTerminalID,rsCNT);
 			}
@@ -244,7 +243,7 @@ public class MariaService {
 		}
 		
 		
-		if(!"".equals(rsPROCNAME_Arr)) {
+		if(rsPROCNAME_Arr.size()!=0) {
 		    String rmTel = rmTEL_TEAM;
 			//카카오 메시지 보내기
 			rmProcMsg = String.format(rmProcMsg,whHOUR,rsPROCNAME_Arr);
@@ -281,9 +280,6 @@ public class MariaService {
 		String stMS = "0000";
 		String endMS = "5959";
 		
-		String sql = StringXMLParse.rtnQuery("noregshop");
-		String sqlParam = String.format(sql, strToday);
-		
 		String whUNIQUENO = rtnDate("U");
 		
 		String stUNIQUENO = whUNIQUENO+stMS+"000000";
@@ -296,6 +292,7 @@ public class MariaService {
 		String stIND_DT = strToday+stTIME;
 		String endIND_DT = strToday+endTIME;
 		
+		ArrayList<RmNoRegShopTimeVO> rmNoRegShopTimeArr;
 //		System.out.println("stUNIQUENOstUNIQUENOstUNIQUENOstUNIQUENO==" + stUNIQUENO);
 //		System.out.println("endUNIQUENOendUNIQUENOendUNIQUENOendUNIQUENO==" + endUNIQUENO);
 //		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DT==" + stIND_DT);
@@ -305,13 +302,14 @@ public class MariaService {
 		
 		try {
 			
-			ArrayList<RmNoRegShopTimeVO> rmNoRegShopTimeArr = mariaVanonMapper.NoShopApp(stUNIQUENO, endUNIQUENO, stIND_DT, endIND_DT, rmNoShopPropCnt, strToday);
+			rmNoRegShopTimeArr = mariaVanonMapper.NoShopApp(stUNIQUENO, endUNIQUENO, stIND_DT, endIND_DT, rmNoShopPropCnt, strToday);
 			
 			for(int i=0; i<rmNoRegShopTimeArr.size(); i++) {
-				   rsNoShopAppNM = rmNoRegShopTimeArr.get(i).getMERCHANTNAME().trim();
-				   rsNoShopAppCNT = rmNoRegShopTimeArr.get(i).getCount();	   
-				   rsNoShop_Arr = rsNoShop_Arr+rsNoShopAppNM+":"+String.valueOf(rsNoShopAppCNT)+"건,";
+				rsNoShopAppNM = rmNoRegShopTimeArr.get(i).getMERCHANTNAME().trim();
+				rsNoShopAppCNT = rmNoRegShopTimeArr.get(i).getCount();	   
+				rsNoShop_Arr = rsNoShop_Arr+rsNoShopAppNM+":"+String.valueOf(rsNoShopAppCNT)+"건,";
 			}
+			
 //			System.out.println("rmNoRegShopTimeVOrmNoRegShopTimeVO==" + rsNoShop_Arr);
 			log.debug("쿼리결과:"+rsNoShop_Arr);
 			
@@ -358,6 +356,8 @@ public class MariaService {
 		String stIND_DT = strToday+stTIME;
 		String endIND_DT = strToday+endTIME;
 		
+		ArrayList<TerAndCnt> stateUploadVO;
+		
 		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DT==" + stIND_DT);
 		System.out.println("endIND_DTendIND_DTendIND_DTendIND_DTendIND_DT==" + endIND_DT);
 		System.out.println("rmPropCntrmPropCntrmPropCntrmPropCntrmPropCnt==" + rmPropCnt);
@@ -365,7 +365,7 @@ public class MariaService {
 		
 		try {
 			
-			ArrayList<StateUploadVO> stateUploadVO = mariaVmmsMapper.StateUpload(stIND_DT, endIND_DT, rmPropCnt, strToday);
+			stateUploadVO = mariaVmmsMapper.StateUpload(stIND_DT, endIND_DT, rmPropCnt, strToday);
 			
 			for(int i=0; i<stateUploadVO.size(); i++) {
 				rsTermonalID = stateUploadVO.get(i).getTERMINAL_ID();
@@ -558,13 +558,13 @@ public class MariaService {
 		String nextDay = DateUtils.dateAdd("", 1).substring(0, 8);	//다음날		
 		String rmMsg = StringUtils.getConfigProp("RM.TBLCHK.MSG");
 		
-		String tlfTbSql = String.format(StringXMLParse.rtnQuery("tlftb"),nextDay);
-		String icTlfTbSql = String.format(StringXMLParse.rtnQuery("ictlftb"),nextDay);
+//		String tlfTbSql = String.format(StringXMLParse.rtnQuery("tlftb"),nextDay);
+//		String icTlfTbSql = String.format(StringXMLParse.rtnQuery("ictlftb"),nextDay);
 		Integer rsTlfCNT=null;
 		Integer rsICtlfCNT=null;
 		
-		log.debug("쿼리문1:"+tlfTbSql);
-		log.debug("쿼리문2:"+icTlfTbSql);
+//		log.debug("쿼리문1:"+tlfTbSql);
+//		log.debug("쿼리문2:"+icTlfTbSql);
 		
 		
 		try {

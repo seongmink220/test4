@@ -33,7 +33,7 @@
 	    FROM VANON.TBLTLF${strToday}
 	    WHERE 
 	        UNIQUENO BETWEEN '${stUNIQUENO}' AND '${endUNIQUENO}' 
-	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('${endIND_DT}','%Y-%m-%d %H:%i:%s')
+	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y%m%d%H%i%s') AND STR_TO_DATE('${endIND_DT}','%Y%m%d%H%i%s')
 	        AND MERCHANTPROCNAME LIKE 'V_TERMSVR%' 
 	    GROUP BY SUBSTRING(MERCHANTPROCNAME, 1, 10)
 	
@@ -43,7 +43,7 @@
 	    FROM VANON.TBLTLF${strToday}
 	    WHERE 
 	        UNIQUENO BETWEEN '${stUNIQUENO}' AND '${endUNIQUENO}'  
-	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('${endIND_DT}','%Y-%m-%d %H:%i:%s')
+	        AND INS_DT BETWEEN STR_TO_DATE('${stIND_DT}','%Y%m%d%H%i%s') AND STR_TO_DATE('${endIND_DT}','%Y%m%d%H%i%s')
 	        AND MERCHANTPROCNAME LIKE 'NEWONLINE%' 
 	    GROUP BY MERCHANTPROCNAME
 	) B ON A.SERVER = B.SERVER

@@ -122,8 +122,8 @@ public class RmChkProc {
 				
 				nowTime = mariaService.rtnDate("t");
 				nowHour = nowTime.substring(0, 2);
-//				rmTime = nowTime.substring(2, 6); //분초
-				rmTime = "5500";
+				rmTime = nowTime.substring(2, 6); //분초
+//				rmTime = "0000";
 				
 				System.out.println("시간:"+nowTime+"/"+rmTime);
 								
@@ -146,7 +146,6 @@ public class RmChkProc {
 
 				//기기별 상태정보 수집 시간 산출-------------------------------------
 				if(rmTime.equals(stateChkTime)) {			//0000		
-//					nowHour = "00";
 					if(!nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[0]) && !nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[1])) { 
 					    map = mariaService.rtnTermStateNext();  //각 기기별 상태 체크 시간	00, 04
 					}else {
