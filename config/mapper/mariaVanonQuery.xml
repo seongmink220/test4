@@ -50,9 +50,6 @@
 	WHERE B.SERVER IS NULL;	 		
 		]]>	
 	</select>
-<!-- DATE_FORMAT(CREATE_DATE,'%Y%m%d%H%i%s')
-STR_TO_DATE('20240223100000','%Y%m%d%H%i%s') -->
-
 
 	<select id ="NoShopApp" resultType="kr.co.ubcn.rm.model.RmNoRegShopTimeVO">
 		<![CDATA[ 

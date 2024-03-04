@@ -123,41 +123,39 @@ public class RmChkProc {
 				nowTime = mariaService.rtnDate("t");
 				nowHour = nowTime.substring(0, 2);
 				rmTime = nowTime.substring(2, 6); //분초
-//				rmTime = "0000";
 				
 				System.out.println("시간:"+nowTime+"/"+rmTime);
 								
 				
 				if(rmTime.equals(rmMangTime2_00)) {
-					mariaService.MangCancelCNT();//망취소 5500
+					mariaService.MangCancelCNT();//망취소
 				}
 				if(rmTime.equals(rmProcTime_00)) {
-					mariaService.AppProcessCheck(); //미응답 프로세스	5900
+					mariaService.AppProcessCheck(); //미응답 프로세스
 				}
 				if(rmTime.equals(rmNoRegShopTime_00)) {
-					mariaService.NoShopApp(); //미등록 가맹점	5800
+					mariaService.NoShopApp(); //미등록 가맹점
 				}				
 				if(rmTime.equals(rmNStateInfoTime_00)) {
-					mariaService.StateUpload(); //상태정보 수신 5900
+					mariaService.StateUpload(); //상태정보 수신
 				}
 				if(rmTime.equals(rmStateInfoTermQTTime_00)) {
-					mariaService.StateQtInfo(); // QT 상태정보 수신 확인		6100
+					mariaService.StateQtInfo(); // QT 상태정보 수신 확인
 				}
 
 				//기기별 상태정보 수집 시간 산출-------------------------------------
-				if(rmTime.equals(stateChkTime)) {			//0000		
+				if(rmTime.equals(stateChkTime)) {
 					if(!nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[0]) && !nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[1])) { 
-					    map = mariaService.rtnTermStateNext();  //각 기기별 상태 체크 시간	00, 04
+					    map = mariaService.rtnTermStateNext();  //각 기기별 상태 체크 시간
 					}else {
 						 log.info("[{}]시는 체크 안함",nowHour);
 					}//
-					HourTerminalStateRcv(map,nowTime); //상태정보 미전송단말기 - 라인 위로 옮김 ksmin
+					HourTerminalStateRcv(map,nowTime); //상태정보 미전송단말기 - 라인 위로 변경 ksmin
 				}//				
 
 				
 				for(int i=0;i<arr_gRMTblChkTime.length;i++) {
-//					nowTime = "225510"; // test
-					if(nowTime.equals(arr_gRMTblChkTime[i]+exeSec10)) {		//2255,2335 + 10
+					if(nowTime.equals(arr_gRMTblChkTime[i]+exeSec10)) {
 						mariaService.DayTBLCheck();
 					}else {
 						//System.out.println("해당없슴:"+nowTime);							

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>kr.co.ubcn.rm</groupId>
-	<artifactId>rmMGMT-1_v1</artifactId>
+	<artifactId>rmMGMT-1_maria</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rmMGMT-1_v1</name>
+	<name>rmMGMT-1_maria</name>
 	<description>RMproject for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -27,19 +27,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-<!--		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		
-		
-		<dependency>
-            <groupId>com.oracle.ojdbc</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>19.3.0.0</version>
-        </dependency>-->
 		
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -80,8 +80,6 @@ public class MariaService {
 		for(i=0; i<rmTerminalMsgArr.length; i++) {
 			log.debug("메시지:"+rmTerminalMsgArr[i]);
 			
-			//log.debug("메시지:"+rmTerminalMsgArr[i].substring(0, 10));
-			
 			if(rmTerminalMsgArr[i].substring(0, 10).equals(terminal)) {
 				rmTerminalMsg = rmTerminalMsgArr[i].substring(11);
 				break;
@@ -101,15 +99,10 @@ public class MariaService {
 		String endTIME = whHOUR+endMS;
 		String rmStateInfoMsg = "";
 		String stIND_DT = strToday+stTIME;
-		//String endIND_DT = strToday+endTIME;
 		String endIND_DT = endDate;
 		StringBuilder sb = new StringBuilder();
 		
 		ArrayList<TerAndCnt> terAndCnt;
-		
-//		System.out.println("terminalterminalterminalterminal===" + terminal);
-//		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DT===" + stIND_DT);
-//		System.out.println("endIND_DTendIND_DTendIND_DTendIND_DT===" + endIND_DT);
 		
 		log.debug("체크  {}:{}:{}",terminal,stIND_DT,endIND_DT);
 		
@@ -153,8 +146,6 @@ public class MariaService {
 	 * 매시 30분,55분에 단위로 거래내역없슴 망취소 건수 모니터링, N회 이상이면 RM 발송 RM.TEL.TEAM, RM.TEL.OTHER
 	 */
 	public void MangCancelCNT() {
-//		System.out.println("[[LOG]]==[[Dbservice_Practice]]");
-		
 		String strToday = rtnDate("d");
 		
 		String rmMANGPropCnt = StringUtils.getConfigProp("RM.MANG");	
@@ -174,11 +165,7 @@ public class MariaService {
 		String stTIME = whHOUR+stMS;
 		String endTIME = whHOUR+endMS;
 		
-//		Map<String,Object> param = new HashMap<>();
-		
 		try {
-//			param.put(endTIME, param) put으로 할지 말지 - ksmin - 2024.02.16
-			
 			rsMangCNT = mariaVanonMapper.MangCancelCNT(stUNIQUENO, endUNIQUENO, stTIME, endTIME, strToday);
 
 			log.debug("쿼리결과:"+rsMangCNT);
@@ -192,7 +179,6 @@ public class MariaService {
 		if(rsMangCNT>=Integer.parseInt(rmMANGPropCnt) ) {
             String rmTel = 	rmTEL_TEAM+","+rmTEL_OTHER;			
 			//카카오 메시지 보내기
-            //테스트시 이 부분을 주석처리 후 테스트  - 2024.02.06 ksmin
 			rmMangMsg = String.format(rmMangMsg,whHOUR,rsMangCNT);
 			//SendKakao(rmMangMsg,rmTel);	
 			
@@ -217,9 +203,6 @@ public class MariaService {
 		
 		String stMS = "0000";
 		String endMS = "5959";
-		
-//		String sql = StringXMLParse.rtnQuery("process");
-//		String sqlParam = sql.replace("[DATE]", strToday);
 		
 		String whUNIQUENO = rtnDate("U");
 		
@@ -293,12 +276,6 @@ public class MariaService {
 		String endIND_DT = strToday+endTIME;
 		
 		ArrayList<RmNoRegShopTimeVO> rmNoRegShopTimeArr;
-//		System.out.println("stUNIQUENOstUNIQUENOstUNIQUENOstUNIQUENO==" + stUNIQUENO);
-//		System.out.println("endUNIQUENOendUNIQUENOendUNIQUENOendUNIQUENO==" + endUNIQUENO);
-//		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DT==" + stIND_DT);
-//		System.out.println("endIND_DTendIND_DTendIND_DTendIND_DTendIND_DT==" + endIND_DT);
-//		System.out.println("rmNoShopPropCntrmNoShopPropCntrmNoShopPropCnt==" + rmNoShopPropCnt);
-//		System.out.println("strTodaystrTodaystrTodaystrTodaystrTodaystrToday==" + strToday);
 		
 		try {
 			
@@ -358,11 +335,6 @@ public class MariaService {
 		
 		ArrayList<TerAndCnt> stateUploadVO;
 		
-		System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DT==" + stIND_DT);
-		System.out.println("endIND_DTendIND_DTendIND_DTendIND_DTendIND_DT==" + endIND_DT);
-		System.out.println("rmPropCntrmPropCntrmPropCntrmPropCntrmPropCnt==" + rmPropCnt);
-		System.out.println("strTodaystrTodaystrTodaystrTodaystrTodaystrToday==" + strToday);
-		
 		try {
 			
 			stateUploadVO = mariaVmmsMapper.StateUpload(stIND_DT, endIND_DT, rmPropCnt, strToday);
@@ -411,9 +383,6 @@ public class MariaService {
 				
 		String rsCreaTime="";
 		
-//		2024.02.23 - ksmin SQL Error로 인해 잠시 수정
-//		rmTermTimeMin = "59";
-		
 		String stMS = "0000";
 		String endMS = rmTermTimeMin+"59";
 		
@@ -428,15 +397,9 @@ public class MariaService {
 		String endIND_DT = strToday+endTIME;
 		StringBuffer sb = new StringBuffer();
 		
-//		ArrayList<StateUploadVO> StateUploadVO;
-		
 		try {
 			
 			for(int i=0; i<rmTerminalID_Arr.length;i++) {
-				System.out.println("rmTerminalID_ArrrmTerminalID_ArrrmTerminalID_Arr==" + rmTerminalID_Arr[i]);
-				System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DTstIND_DT==" + stIND_DT);
-				System.out.println("endIND_DTendIND_DTendIND_DTendIND_DTendIND_DTendIND_DT==" + endIND_DT);
-				
 				
 				rsCreaTime =  mariaVmmsMapper.StateQtInfo(rmTerminalID_Arr[i], stIND_DT, endIND_DT);
 								
@@ -500,13 +463,9 @@ public class MariaService {
 		String stMS = "0000";
 		String endMS = "5959";
 		String rmTerminal = StringUtils.getConfigProp("RM.STATEINFO.TERM");	
-//		2000044454,2000045473,2000045836,2000045837,2000045931,2000045933,2000047010,2000047909,2000048242,2000048824,2000049162,2000049163,2000049174,2000049188,2000049236,2000049285,2000049286,2000049300,2000049400,2000065926,2000064085,2000063664,2000061505,2000060811,2000059992,2000059991,2000069695,2000069225,2000069224,2000069177,2000068546,2000068469,2000068433,2000066859,2000066818,2000074446,2000074289,2000074227,2000074223,2000073694,2000073688,2000073485,2000073484,2000073239,2000073238,2000073034,2000071136,2000070384,2000070381,2000070063
 		String[] rmTerminalArr = rmTerminal.split(",");
 		String rmSTATEINFO_NextMinHour = StringUtils.getConfigProp("RM.STATEINFO.TERM.TIME.MIN");
 		
-//		String sql = StringXMLParse.rtnQuery("statinfo_term_time_last");
-//		String sqlParam = sql;
-
 		String stIND_DT = strToday+"00"+stMS;
 		
 		String rsCreateTime = "";
@@ -520,10 +479,6 @@ public class MariaService {
 			for(int i=0; i<rmTerminalArr.length; i++) {
 				
 				String receptionTime = mariaVmmsMapper.rtnTermStateNext(rmTerminalArr[i], stIND_DT);
-			
-//				System.out.println("rmTerminalArrrmTerminalArrrmTerminalArr" + rmTerminalArr[i]);
-//				System.out.println("stIND_DTstIND_DTstIND_DTstIND_DTstIND_DT" + stIND_DT);
-//				System.out.println("rsCreateTimersCreateTimersCreateTimersCreateTimersCreateTime====" + rsCreateTime);
 				
 				if(receptionTime != null) {
 					rsCreateTime = receptionTime.trim();  //마지막 수신시간
@@ -558,8 +513,6 @@ public class MariaService {
 		String nextDay = DateUtils.dateAdd("", 1).substring(0, 8);	//다음날		
 		String rmMsg = StringUtils.getConfigProp("RM.TBLCHK.MSG");
 		
-//		String tlfTbSql = String.format(StringXMLParse.rtnQuery("tlftb"),nextDay);
-//		String icTlfTbSql = String.format(StringXMLParse.rtnQuery("ictlftb"),nextDay);
 		Integer rsTlfCNT=null;
 		Integer rsICtlfCNT=null;
 		
@@ -711,10 +664,6 @@ public class MariaService {
 	 */
 	public String rtnDate(String code) {
 		String nowDate = DateUtils.rtnDateMille();
-		
-		//받아온 현재 시간 확인 - 2024.02.06 ksmin
-//		System.out.println("[[nowDate]]==" + nowDate);
-		//System.out.println("현재시간:"+nowDate);
 		
 		String rtnDate=null;
 		//20210303134748029
