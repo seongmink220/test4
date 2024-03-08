@@ -124,6 +124,7 @@ public class RmChkProc {
 				nowHour = nowTime.substring(0, 2);
 				rmTime = nowTime.substring(2, 6); //분초
 				
+				
 				System.out.println("시간:"+nowTime+"/"+rmTime);
 								
 				
