@@ -11,6 +11,9 @@
 	GROUP BY TERMINAL_ID HAVING COUNT(*) >= #{rmPropCnt}
 		]]>	
 	</select>
+	<!-- 	SELECT TERMINAL_ID,COUNT(*) AS CNT FROM TB_TXT_STATUS
+	WHERE CREATE_DATE BETWEEN TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TO_DATE(?,'YYYY-MM-DD HH24:MI:SS') AND TERMINAL_ID NOT IN ('2000047163')
+	GROUP BY TERMINAL_ID HAVING COUNT(*) >= ?	 -->
 	
 	
 	<select id="StateQtInfo" resultType="kr.co.ubcn.rm.model.TerAndCnt">
@@ -26,22 +29,20 @@
 	
 	<select id="rtnTermStateNext" resultType="String">
 		<![CDATA[ 
-	SELECT CREATETIME FROM (
 	SELECT DATE_FORMAT(CREATE_DATE,'%Y%m%d%H%i%s') AS CREATETIME 
 	FROM TB_TXT_STATUS 
 	WHERE TERMINAL_ID = #{rmTerminalArr} AND  
  	CREATE_DATE >= STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s')
-	ORDER BY CREATE_DATE DESC ) A
-	limit 1
+	ORDER BY CREATE_DATE DESC limit 1
 		]]>	
 	</select>
 
 
   	<select id="HourTermStateCheck" resultType="kr.co.ubcn.rm.model.TerAndCnt">
 		<![CDATA[ 
-	SELECT TERMINAL_ID,COUNT(*) AS "CNT" FROM TB_TXT_STATUS 
+	SELECT TERMINAL_ID, COUNT(*) AS CNT FROM TB_TXT_STATUS 
 	WHERE TERMINAL_ID = #{terminal} AND  
- 	CREATE_DATE BETWEEN STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT},'%Y%m%d%H%i%s') 
+ 	CREATE_DATE BETWEEN STR_TO_DATE(#{stIND_DT},'%Y%m%d%H%i%s') AND STR_TO_DATE(#{endIND_DT}, '%Y%m%d%H%i%s')
 	GROUP BY TERMINAL_ID
 		]]>	
 	</select>

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,6 @@ public class MariaService {
 	public void test() {
 		
 		System.out.println("[[LOG]]==[[]]");
-		
 	}
 
 	
@@ -102,7 +102,7 @@ public class MariaService {
 		String endIND_DT = endDate;
 		StringBuilder sb = new StringBuilder();
 		
-		ArrayList<TerAndCnt> terAndCnt;
+		TerAndCnt terAndCnt;
 		
 		log.debug("체크  {}:{}:{}",terminal,stIND_DT,endIND_DT);
 		
@@ -110,12 +110,14 @@ public class MariaService {
 			
 			terAndCnt = mariaVmmsMapper.HourTermStateCheck(terminal, stIND_DT, endIND_DT);
 			
-			for(int j=0; j<terAndCnt.size(); j++) {
-				rsTerminalID = terAndCnt.get(j).getTERMINAL_ID();
-				rsCNT = terAndCnt.get(j).getCNT();
-				   
+//			for(int j=0; j<terAndCnt.size(); j++) {
+			if(terAndCnt != null) {
+				rsTerminalID = terAndCnt.getTERMINAL_ID().trim();
+				rsCNT = terAndCnt.getCNT();
+				
 				log.debug("체크 터미널ID {}:카운트{}",rsTerminalID,rsCNT);
 			}
+//			}
 		   	   
 			if(!terminal.equals(rsTerminalID)) {
 				sb.append(String.format(rmTerminalMsg, terminal, rmStateInfoTermTitle, whHOUR));				   
@@ -129,8 +131,8 @@ public class MariaService {
 		if(!"".equals(rmStateInfoMsg)) {			
 			String rmTel = rmTEL_TERM;			
 			//카카오 메시지 보내기
-			//SendKakao(rmStateInfoMsg,rmTel);
-			
+			SendKakao("KSM" + rmStateInfoMsg,rmTel);
+
 			log.info("상태정보 수신 없슴: [{}]시  [{}]",whHOUR, rmStateInfoMsg);
 		}else {
 			log.info("상태정보 수신 결과: [{}]시 상태정보 0건 수신단말기[{}] 없슴",whHOUR,terminal);	
@@ -180,7 +182,7 @@ public class MariaService {
             String rmTel = 	rmTEL_TEAM+","+rmTEL_OTHER;			
 			//카카오 메시지 보내기
 			rmMangMsg = String.format(rmMangMsg,whHOUR,rsMangCNT);
-			//SendKakao(rmMangMsg,rmTel);	
+			SendKakao("KSM" + rmMangMsg,rmTel);	
 			
 		}else {
 			log.info("망취소 결과: [{}]시 망취소:[{}]건",whHOUR, rsMangCNT);	
@@ -219,6 +221,10 @@ public class MariaService {
 		try {
 			rsPROCNAME_Arr = mariaVanonMapper.AppProcessCheck(stUNIQUENO, endUNIQUENO, stIND_DT, endIND_DT, strToday);
 			
+//			for(int i=0; i<rsPROCNAME_Arr.size(); i++) {
+//				System.out.println("rsPROCNAME_ArrrsPROCNAME_ArrrsPROCNAME_Arr" + rsPROCNAME_Arr.get(i));
+//			}
+			
 			log.debug("쿼리결과:"+rsPROCNAME_Arr);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -230,7 +236,7 @@ public class MariaService {
 		    String rmTel = rmTEL_TEAM;
 			//카카오 메시지 보내기
 			rmProcMsg = String.format(rmProcMsg,whHOUR,rsPROCNAME_Arr);
-			//SendKakao(rmProcMsg, rmTel);
+			SendKakao("KSM" + rmProcMsg, rmTel);
 			
 		}else {
 			log.info("프로세스체크 결과: [{}]시 무응답 프로세스:없슴",whHOUR);	
@@ -287,7 +293,6 @@ public class MariaService {
 				rsNoShop_Arr = rsNoShop_Arr+rsNoShopAppNM+":"+String.valueOf(rsNoShopAppCNT)+"건,";
 			}
 			
-//			System.out.println("rmNoRegShopTimeVOrmNoRegShopTimeVO==" + rsNoShop_Arr);
 			log.debug("쿼리결과:"+rsNoShop_Arr);
 			
 		}catch(Exception e){
@@ -299,8 +304,8 @@ public class MariaService {
 			String rmTel = 	rmTEL_TEAM+","+rmTEL_OTHER;
 			//카카오 메시지 보내기
 			rmNoShopMsg = String.format(rmNoShopMsg,whHOUR,rmNoShopPropCnt,rsNoShop_Arr);
-			//SendKakao(rmNoShopMsg,rmTel);		
-			
+			SendKakao("KSM" + rmNoShopMsg,rmTel);		
+
 		}else {
 			log.info("미등록 가맹점 결과: [{}]시 [{}]건이상 미등록가맹점 없슴",whHOUR, rmNoShopPropCnt);	
 		}
@@ -333,7 +338,8 @@ public class MariaService {
 		String stIND_DT = strToday+stTIME;
 		String endIND_DT = strToday+endTIME;
 		
-		ArrayList<TerAndCnt> stateUploadVO;
+		
+		List<TerAndCnt> stateUploadVO;
 		
 		try {
 			
@@ -358,7 +364,8 @@ public class MariaService {
 			
 			//카카오 메시지 보내기
 			rmStateInfoMsg = String.format(rmStateInfoMsg,whHOUR,rsStateInfo_Arr);
-			//SendKakao(rmStateInfoMsg,rmTel);			
+			SendKakao("KSM" + rmStateInfoMsg,rmTel);	
+			
 		}else {
 			log.info("상태정보 수신 결과: [{}]시 [{}]건이상 단말기 없슴",whHOUR, rmPropCnt);	
 		}
@@ -385,9 +392,6 @@ public class MariaService {
 		
 		String stMS = "0000";
 		String endMS = rmTermTimeMin+"59";
-		
-		String sql = StringXMLParse.rtnQuery("statinfo_term");
-		String sqlParam = sql;
 		
 		String whHOUR = rtnDate("h");
 		String stTIME = whHOUR+stMS;
@@ -440,7 +444,7 @@ public class MariaService {
 			
 			log.info(rmStateInfoMsg);
 			
-			//SendKakao(rmStateInfoMsg,rmTel);			
+			SendKakao("KSM" + rmStateInfoMsg,rmTel);
 		}else {
 			log.info("QT상태정보 수신 결과: [{}]시  단말기 없슴",whHOUR);	
 		}
@@ -459,14 +463,13 @@ public class MariaService {
 		String nowTimeHour="";
 		nowTimeHour = DateUtils.timeAdd("", 0).substring(0, 10);
 		
-		
 		String stMS = "0000";
 		String endMS = "5959";
 		String rmTerminal = StringUtils.getConfigProp("RM.STATEINFO.TERM");	
 		String[] rmTerminalArr = rmTerminal.split(",");
-		String rmSTATEINFO_NextMinHour = StringUtils.getConfigProp("RM.STATEINFO.TERM.TIME.MIN");
+		String rmSTATEINFO_NextMinHour = StringUtils.getConfigProp("RM.STATEINFO.TERM.TIME.MIN"); //3
 		
-		String stIND_DT = strToday+"00"+stMS;
+		String stIND_DT = strToday+"00"+stMS; //20240313000000
 		
 		String rsCreateTime = "";
 		String lastDT = "";  //마지막 수신 시간
@@ -475,17 +478,20 @@ public class MariaService {
 		log.info("상태정보체크  수신시간{}",stIND_DT);
 		
 		try {
-			
 			for(int i=0; i<rmTerminalArr.length; i++) {
 				
-				String receptionTime = mariaVmmsMapper.rtnTermStateNext(rmTerminalArr[i], stIND_DT);
+				String createTime = mariaVmmsMapper.rtnTermStateNext(rmTerminalArr[i], stIND_DT);	//가장 최근 상태 정보 수신
 				
-				if(receptionTime != null) {
-					rsCreateTime = receptionTime.trim();  //마지막 수신시간
+				if(createTime != null) {
+					rsCreateTime = createTime.trim();  //마지막 수신시간
+				}else {
+					continue;
 				}
 
-				lastDT = DateUtils.rtnDateString(nowTimeHour+rsCreateTime.substring(10, 14));
-				nextPreDictDT = DateUtils.timeAdd2(lastDT,0,Integer.parseInt(rmSTATEINFO_NextMinHour));  //현재텀의 측정시간
+
+				lastDT = DateUtils.rtnDateString(nowTimeHour+rsCreateTime.substring(10, 14));	//20240314092602
+				nextPreDictDT = DateUtils.timeAdd2(lastDT,0,Integer.parseInt(rmSTATEINFO_NextMinHour));  //마지막 층정시간 +3분
+				
 				map.put(rmTerminalArr[i],nextPreDictDT);
 				   
 				log.info("상태정보체크  수신시간{}/{}",rmTerminalArr[i], lastDT);
@@ -519,7 +525,6 @@ public class MariaService {
 //		log.debug("쿼리문1:"+tlfTbSql);
 //		log.debug("쿼리문2:"+icTlfTbSql);
 		
-		
 		try {
 			
 			rsTlfCNT = mariaVanonMapper.DayTBLCheck1(nextDay);
@@ -543,7 +548,7 @@ public class MariaService {
 			rmMsg = String.format(rmMsg,whHOUR,nextDay);			
 			log.info(nextDay+" 일일원장 생성안됨!:"+rmMsg);
 			
-			//SendKakao(rmMsg,rmTel);
+			SendKakao("KSM" + rmMsg,rmTel);
 		}	
 	}
 	
@@ -664,7 +669,6 @@ public class MariaService {
 	 */
 	public String rtnDate(String code) {
 		String nowDate = DateUtils.rtnDateMille();
-		
 		String rtnDate=null;
 		//20210303134748029
 		switch(code) {

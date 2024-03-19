@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 @PropertySource("file:config/application.properties")
 @Service
 public class RmChkProc {
-	
 	@Autowired
 	private MariaService mariaService;
 			
@@ -63,7 +62,7 @@ public class RmChkProc {
 				log.debug(entry.getKey() + ":" +entry.getValue());
 				rsTerminalID = entry.getKey();
 				nextPridictTime = entry.getValue();
-				nextPridictMin = entry.getValue().substring(8, 14);
+				nextPridictMin = entry.getValue().substring(8, 14);		//예상 시분초
 				
 				log.info( "상태정보 다음예상시간:" +rsTerminalID+":"+nextPridictMin);
 				
@@ -119,41 +118,46 @@ public class RmChkProc {
 		
 		while(true) {		
 			try {
-				
 				nowTime = mariaService.rtnDate("t");
-				nowHour = nowTime.substring(0, 2);
+				nowHour = nowTime.substring(0, 2); //시
 				rmTime = nowTime.substring(2, 6); //분초
+				
+//				ksm - test
+//				String RMTIME = StringUtils.getConfigProp("RMTIME");
+//				rmTime = RMTIME;
 				
 				
 				System.out.println("시간:"+nowTime+"/"+rmTime);
-								
 				
-				if(rmTime.equals(rmMangTime2_00)) {
+				
+				if(rmTime.equals(rmMangTime2_00)) {	//55
 					mariaService.MangCancelCNT();//망취소
 				}
-				if(rmTime.equals(rmProcTime_00)) {
+				if(rmTime.equals(rmProcTime_00)) {	//59
 					mariaService.AppProcessCheck(); //미응답 프로세스
 				}
-				if(rmTime.equals(rmNoRegShopTime_00)) {
+				if(rmTime.equals(rmNoRegShopTime_00)) {	//58
 					mariaService.NoShopApp(); //미등록 가맹점
 				}				
-				if(rmTime.equals(rmNStateInfoTime_00)) {
+				if(rmTime.equals(rmNStateInfoTime_00)) {	//59
 					mariaService.StateUpload(); //상태정보 수신
 				}
-				if(rmTime.equals(rmStateInfoTermQTTime_00)) {
+				if(rmTime.equals(rmStateInfoTermQTTime_00)) {	//61
 					mariaService.StateQtInfo(); // QT 상태정보 수신 확인
 				}
 
+				
 				//기기별 상태정보 수집 시간 산출-------------------------------------
-				if(rmTime.equals(stateChkTime)) {
-					if(!nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[0]) && !nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[1])) { 
-					    map = mariaService.rtnTermStateNext();  //각 기기별 상태 체크 시간
+				if(rmTime.equals(stateChkTime)) {	//0000 -> 매시 정각
+					if(!nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[0]) && !nowHour.equals(arr_gRM_STATEINFO_TERM_OFF_TIME[1])) { // 00, 04
+					    map = mariaService.rtnTermStateNext();  //00시와 04시를 제외하고 각 기기별 상태 체크 시간
 					}else {
 						 log.info("[{}]시는 체크 안함",nowHour);
 					}//
-					HourTerminalStateRcv(map,nowTime); //상태정보 미전송단말기 - 라인 위로 변경 ksmin
-				}//				
-
+				}//
+				HourTerminalStateRcv(map,nowTime); //상태정보 미전송단말기
+				//----------------------------------------------------------
+				
 				
 				for(int i=0;i<arr_gRMTblChkTime.length;i++) {
 					if(nowTime.equals(arr_gRMTblChkTime[i]+exeSec10)) {

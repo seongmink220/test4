@@ -1,6 +1,6 @@
 <configuration>
 	
-	<property name="LOG_DIR" value="D:/temp/logs"/>
+	<property name="LOG_DIR" value="/app/vmms/logs"/>
 	
 	<property name="LOG_PATH_NAME" value="${LOG_DIR}/rmMGMT1.log" />
 	
@@ -12,9 +12,9 @@
 	</appender>
 	
 
-	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
- 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>info</level>
+	<appender name="RMAppSv" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
 		</filter>
 		<file>${LOG_PATH_NAME}</file>
 		
@@ -31,14 +31,15 @@
 
 
  	<logger name="kr.co.ubcn.rm">
-		<appender-ref ref="ROLLING" />
+		<appender-ref ref="RMAppSv" />
 	</logger>
 	
 	<logger name="org.hibernate.SQL" >
-		<appender-ref ref="ROLLING" />		
+		<appender-ref ref="RMAppSv" />		
 	</logger>
 	
-	<root level="INFO">
+<!--	<root level="INFO"> -->
+	<root level = "INFO">
 		<appender-ref ref="CONSOLE"/>
 	</root>
 	
